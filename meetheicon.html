@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MeeTheIcon — Where Fans Become Guests</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --cream-light: #faf7f2;
+    --green-deep: #1a2e1f;
+    --green-mid: #2d4a35;
+    --green-muted: #4a6b52;
+    --green-accent: #7aad7a;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --text-dark: #0e1a11;
+    --text-muted: #6b7c6d;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream-light);
+    color: var(--text-dark);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--green-muted);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.18s ease;
+    opacity: 0.7;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 60px;
+    background: transparent;
+    transition: background 0.4s ease, padding 0.3s ease;
+  }
+  nav.scrolled {
+    background: rgba(26, 46, 31, 0.97);
+    padding: 18px 60px;
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex; gap: 44px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+  .nav-cta {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border: 1px solid var(--gold);
+    padding: 10px 24px;
+    transition: all 0.3s ease;
+  }
+  .nav-cta:hover {
+    background: var(--gold);
+    color: var(--green-deep);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 60px 90px;
+    overflow: hidden;
+    background: var(--green-deep);
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 70% 40%, rgba(74,107,82,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 20% 80%, rgba(201,168,76,0.12) 0%, transparent 60%),
+      linear-gradient(160deg, #0e1a11 0%, #1a2e1f 50%, #0e1a11 100%);
+  }
+  .hero-grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .hero-line-deco {
+    position: absolute;
+    top: 0; right: 120px;
+    width: 1px; height: 100vh;
+    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.3), transparent);
+    animation: lineGrow 2s ease forwards;
+  }
+  @keyframes lineGrow {
+    from { transform: scaleY(0); transform-origin: top; }
+    to { transform: scaleY(1); }
+  }
+  .hero-eyebrow {
+    position: relative;
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 1s 0.4s ease forwards;
+  }
+  .hero-title {
+    position: relative;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.2rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.02;
+    color: var(--cream);
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeUp 1s 0.6s ease forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .hero-sub {
+    position: relative;
+    margin-top: 32px;
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(245,240,232,0.65);
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 1s 0.85s ease forwards;
+  }
+  .hero-actions {
+    position: relative;
+    margin-top: 48px;
+    display: flex; gap: 20px; align-items: center;
+    opacity: 0;
+    animation: fadeUp 1s 1.05s ease forwards;
+  }
+  .btn-primary {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--green-deep);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 16px 40px;
+    transition: all 0.3s ease;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.3);
+  }
+  .btn-ghost {
+    display: inline-block;
+    color: var(--cream);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 16px 32px;
+    border: 1px solid rgba(245,240,232,0.25);
+    transition: all 0.3s ease;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(245,240,232,0.6);
+    background: rgba(245,240,232,0.05);
+  }
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 36px; right: 60px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s 1.4s ease forwards;
+  }
+  .hero-scroll-hint span {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, rgba(201,168,76,0.7), transparent);
+    animation: scrollPulse 2s infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(1); opacity: 1; }
+    50% { transform: scaleY(0.5); opacity: 0.4; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* STATS STRIP */
+  .stats-strip {
+    background: var(--green-mid);
+    padding: 40px 60px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid rgba(201,168,76,0.2);
+  }
+  .stat-item {
+    text-align: center;
+    padding: 20px;
+    border-right: 1px solid rgba(245,240,232,0.1);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.5);
+    margin-top: 8px;
+  }
+
+  /* SECTIONS SHARED */
+  section { padding: 120px 60px; }
+  .section-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--green-deep);
+  }
+  .section-title em { font-style: italic; color: var(--green-muted); }
+
+  /* ABOUT */
+  .about {
+    background: var(--cream-light);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+  .about-visual {
+    position: relative;
+    height: 520px;
+  }
+  .about-card {
+    position: absolute;
+    background: var(--green-deep);
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .about-card-main {
+    width: 80%; height: 420px;
+    top: 0; left: 0;
+    display: flex; align-items: flex-end;
+    padding: 32px;
+    overflow: hidden;
+  }
+  .about-card-main::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, rgba(74,107,82,0.3) 0%, transparent 60%),
+                linear-gradient(to top, rgba(14,26,17,0.9) 0%, transparent 50%);
+  }
+  .about-card-accent {
+    width: 55%; height: 200px;
+    bottom: 0; right: 0;
+    background: var(--green-mid);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .about-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--cream);
+    opacity: 0.85;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+  }
+  .about-accent-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--gold-light);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .about-content p {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--text-muted);
+    margin-top: 24px;
+    font-weight: 300;
+  }
+  .about-divider {
+    width: 60px; height: 1px;
+    background: var(--gold);
+    margin: 32px 0;
+  }
+  .about-feature {
+    display: flex; gap: 16px;
+    align-items: flex-start;
+    margin-top: 20px;
+  }
+  .about-icon {
+    width: 36px; height: 36px;
+    border: 1px solid var(--green-muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+  .about-feature-text h4 {
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .about-feature-text p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0;
+  }
+
+  /* SERVICES */
+  .services {
+    background: var(--green-deep);
+    position: relative;
+    overflow: hidden;
+  }
+  .services::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74,107,82,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .services .section-title { color: var(--cream); }
+  .services .section-title em { color: var(--gold-light); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 64px;
+  }
+  .service-card {
+    background: rgba(245,240,232,0.03);
+    border: 1px solid rgba(245,240,232,0.07);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+  .service-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .service-card:hover {
+    background: rgba(245,240,232,0.06);
+    transform: translateY(-4px);
+  }
+  .service-card:hover::after { transform: scaleX(1); }
+  .service-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: rgba(201,168,76,0.15);
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+  .service-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .service-card p {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: rgba(245,240,232,0.5);
+    font-weight: 300;
+  }
+  .service-tag {
+    display: inline-block;
+    margin-top: 24px;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 5px 14px;
+  }
+
+  /* PROCESS */
+  .process {
+    background: var(--cream);
+  }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    margin-top: 64px;
+  }
+  .step {
+    position: relative;
+    padding-top: 24px;
+    border-top: 1px solid rgba(26,46,31,0.15);
+  }
+  .step::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 0;
+    width: 40px; height: 2px;
+    background: var(--gold);
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+  .step h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--green-deep);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .step p {
+    font-size: 0.83rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+  }
+
+  /* CONTACT */
+  .contact {
+    background: var(--green-deep);
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::before {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+  }
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+  .contact .section-title { color: var(--cream); }
+  .contact .section-title em { color: var(--gold-light); }
+  .contact-text {
+    font-size: 0.9rem;
+    line-height: 1.9;
+    color: rgba(245,240,232,0.55);
+    margin-top: 24px;
+  }
+  .contact-info {
+    margin-top: 40px;
+  }
+  .contact-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(245,240,232,0.08);
+  }
+  .contact-info-item:first-child { border-top: 1px solid rgba(245,240,232,0.08); }
+  .contact-info-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .contact-info-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    font-weight: 300;
+  }
+
+  /* Form */
+  .form-group {
+    margin-bottom: 24px;
+  }
+  .form-label {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.45);
+    margin-bottom: 10px;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    background: rgba(245,240,232,0.04);
+    border: 1px solid rgba(245,240,232,0.12);
+    color: var(--cream);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 300;
+    padding: 14px 18px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    -webkit-appearance: none;
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(245,240,232,0.2); }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: rgba(201,168,76,0.5);
+    background: rgba(245,240,232,0.06);
+  }
+  .form-textarea { resize: none; height: 130px; }
+  .form-select option { background: var(--green-deep); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-submit {
+    width: 100%;
+    background: var(--gold);
+    color: var(--green-deep);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    border: none;
+    padding: 18px;
+    cursor: none;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+  }
+  .form-submit:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.25);
+  }
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    border: 1px solid rgba(201,168,76,0.3);
+  }
+  .form-success h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+  }
+  .form-success p {
+    font-size: 0.85rem;
+    color: rgba(245,240,232,0.55);
+  }
+
+  /* FOOTER */
+  footer {
+    background: #0a120c;
+    padding: 48px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .footer-tagline {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.3);
+    margin-top: 6px;
+  }
+  .footer-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.35);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy {
+    font-size: 0.65rem;
+    color: rgba(245,240,232,0.2);
+    letter-spacing: 0.1em;
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.35s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 22px 28px; }
+    nav.scrolled { padding: 14px 28px; }
+    .nav-links { display: none; }
+    section { padding: 80px 28px; }
+    .hero { padding: 0 28px 70px; }
+    .stats-strip { grid-template-columns: 1fr; padding: 28px; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(245,240,232,0.1); }
+    .about { grid-template-columns: 1fr; gap: 50px; }
+    .about-visual { height: 300px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .contact-inner { grid-template-columns: 1fr; gap: 50px; }
+    footer { flex-direction: column; gap: 28px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">MeeTheIcon</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Request Access</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-line-deco"></div>
+
+  <p class="hero-eyebrow">The World's Most Exclusive Celebrity Access Platform</p>
+  <h1 class="hero-title">Where Fans<br>Become <em>Guests.</em></h1>
+  <p class="hero-sub">Connecting you directly with the stars you admire — for private meetups, intimate experiences, and unforgettable events. No middlemen. No waiting. Just you, and the people who inspire you.</p>
+
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">Request an Experience</a>
+    <a href="#services" class="btn-ghost">Explore Services</a>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-number">500+</div>
+    <div class="stat-label">Celebrity Connections</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">98%</div>
+    <div class="stat-label">Client Satisfaction</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">60+</div>
+    <div class="stat-label">Countries Served</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-visual reveal">
+    <div class="about-card about-card-main">
+      <p class="about-quote">"Every extraordinary encounter begins with the courage to believe you deserve access."</p>
+    </div>
+    <div class="about-card about-card-accent">
+      <p class="about-accent-text">Real. Personal.<br>Extraordinary.</p>
+    </div>
+  </div>
+  <div class="about-content">
+    <p class="section-tag reveal">Our Story</p>
+    <h2 class="section-title reveal reveal-delay-1">Beyond the Velvet Rope, <em>Into the Room.</em></h2>
+    <div class="about-divider reveal reveal-delay-2"></div>
+    <p class="reveal reveal-delay-2">MeeTheIcon was born from a simple truth: the people who inspire us most are still people — and genuine connection shouldn't be reserved for the privileged few. We exist to bridge that gap with elegance, discretion, and results.</p>
+    <p class="reveal reveal-delay-3">Every experience we curate is bespoke, confidential, and designed to leave a permanent impression on both sides of the meeting.</p>
+
+    <div class="about-feature reveal reveal-delay-2">
+      <div class="about-icon">✦</div>
+      <div class="about-feature-text">
+        <h4>Verified & Trusted</h4>
+        <p>Every celebrity partner and client is carefully vetted for authenticity and safety.</p>
+      </div>
+    </div>
+    <div class="about-feature reveal reveal-delay-3">
+      <div class="about-icon">◈</div>
+      <div class="about-feature-text">
+        <h4>Total Discretion</h4>
+        <p>Complete privacy for all parties — protected by NDAs and world-class confidentiality standards.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <p class="section-tag reveal">What We Offer</p>
+  <h2 class="section-title reveal reveal-delay-1">Curated Experiences,<br><em>Designed for You.</em></h2>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01</div>
+      <h3>Private Meetups</h3>
+      <p>One-on-one or small group meetings with your chosen celebrity in an intimate, comfortable setting tailored to your vision.</p>
+      <span class="service-tag">Exclusive Access</span>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-num">02</div>
+      <h3>Intimate Events</h3>
+      <p>From private dinners to curated gatherings, we design multi-guest experiences where stars are truly present — not performing.</p>
+      <span class="service-tag">Bespoke Events</span>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-num">03</div>
+      <h3>Virtual Sessions</h3>
+      <p>High-quality, personal video experiences for those who want connection without geographic limits. Real time, real conversation.</p>
+      <span class="service-tag">Global Reach</span>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">04</div>
+      <h3>Behind-the-Scenes Access</h3>
+      <p>Visit sets, studios, rehearsals, and green rooms. Experience what the world never sees.</p>
+      <span class="service-tag">Insider Experience</span>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-num">05</div>
+      <h3>Mentorship Sessions</h3>
+      <p>For the ambitious — direct conversations with icons in business, entertainment, sports, and culture who share their wisdom personally.</p>
+      <span class="service-tag">Growth & Insight</span>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-num">06</div>
+      <h3>Custom Requests</h3>
+      <p>Have something extraordinary in mind? We specialize in the unprecedented. Tell us your dream — we'll make it happen.</p>
+      <span class="service-tag">Anything Possible</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="how">
+  <p class="section-tag reveal">How It Works</p>
+  <h2 class="section-title reveal reveal-delay-1">Simple. Discreet.<br><em>Unforgettable.</em></h2>
+  <div class="process-steps">
+    <div class="step reveal">
+      <div class="step-num">Step 01</div>
+      <h4>Submit Your Request</h4>
+      <p>Tell us who you want to meet, what kind of experience you envision, and your preferred timeline.</p>
+    </div>
+    <div class="step reveal reveal-delay-1">
+      <div class="step-num">Step 02</div>
+      <h4>We Get to Work</h4>
+      <p>Our team reaches out through verified channels, negotiates terms, and handles every logistical detail on your behalf.</p>
+    </div>
+    <div class="step reveal reveal-delay-2">
+      <div class="step-num">Step 03</div>
+      <h4>Confirmation & Prep</h4>
+      <p>Once confirmed, you receive a full experience brief — what to expect, where to be, and how to make the most of it.</p>
+    </div>
+    <div class="step reveal reveal-delay-3">
+      <div class="step-num">Step 04</div>
+      <h4>The Experience</h4>
+      <p>You walk in. You meet your icon. You leave with a memory no one can take from you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div>
+      <p class="section-tag reveal">Get in Touch</p>
+      <h2 class="section-title reveal reveal-delay-1">Ready to Meet<br><em>Your Icon?</em></h2>
+      <p class="contact-text reveal reveal-delay-2">Every legend was once a stranger to someone. Let us make the introduction. Fill out the form and our team will respond within 24 hours to discuss your request in complete confidence.</p>
+      <div class="contact-info reveal reveal-delay-3">
+        <div class="contact-info-item">
+          <span class="contact-info-label">Email</span>
+          <span class="contact-info-value">hello@meetheicon.com</span>
+        </div>
+        <div class="contact-info-item">
+          <span class="contact-info-label">Response Time</span>
+          <span class="contact-info-value">Within 24 Hours</span>
+        </div>
+        <div class="contact-info-item">
+          <span class="contact-info-label">Availability</span>
+          <span class="contact-info-value">Global — 60+ Countries</span>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <form id="contactForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" type="text" placeholder="Your first name" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" type="text" placeholder="Your last name" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" placeholder="your@email.com" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Who Do You Want to Meet?</label>
+          <input class="form-input" type="text" placeholder="Celebrity name or category" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Experience Type</label>
+          <select class="form-select form-input" required>
+            <option value="" disabled selected>Select an experience</option>
+            <option>Private Meetup</option>
+            <option>Intimate Event</option>
+            <option>Virtual Session</option>
+            <option>Behind-the-Scenes Access</option>
+            <option>Mentorship Session</option>
+            <option>Custom Request</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tell Us Your Vision</label>
+          <textarea class="form-textarea" placeholder="Describe your dream experience in as much detail as you'd like..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit">Submit Request →</button>
+      </form>
+      <div class="form-success" id="formSuccess">
+        <h3>Request Received.</h3>
+        <p>Our team will be in touch within 24 hours to begin crafting your experience. Welcome to MeeTheIcon.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">MeeTheIcon</div>
+    <div class="footer-tagline">Where Fans Become Guests</div>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 MeeTheIcon. All rights reserved.</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 60);
+  });
+
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Form submit
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    this.style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  });
+</script>
+</body>
+</html>
